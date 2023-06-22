@@ -1,0 +1,11 @@
+GET http://localhost:5000/api/articles
+
+###
+POST http://localhost:5000/api/articles
+Content-Type: application/json
+
+{
+    "title": "The Updated DOM article",
+    "description": "New markdown article you need to know",
+    "markdown": "test"
+}

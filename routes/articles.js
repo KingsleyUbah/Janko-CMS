@@ -1,36 +1,42 @@
 const express = require("express")
 const Article = require('../models/article')
 const router = express.Router()
+const loginRequired = require('../middlewares/login-required')
 
-router.get('/new', (req, res) => {
-    res.render('articles/new', {article: new Article() })
+router.get('/new', loginRequired, (req, res) => {      
+    return res.render('articles/new', {article: new Article() })
 })
 
-router.get('/edit/:id', async (req, res) => {
+router.get('/edit/:id', loginRequired, async (req, res) => {    
+
     const article = await Article.findById(req.params.id)
-    res.render('articles/edit', {article: article})
+    return res.render('articles/edit', {article: article})
 })
 
-router.get('/:slug', async (req, res) => {
+router.get('/:slug', loginRequired, async (req, res) => {        
+
     const article = await Article.findOne({slug: req.params.slug})
 
     if(article == null) res.redirect('/')
-    res.render('articles/show', {article: article})
+
+    return res.render('articles/show', {article: article})
 })
 
-router.post('/', async (req, res, next) => {    
+router.post('/', loginRequired, async (req, res, next) => {        
+
   req.article = new Article()
   next()
 }, saveArticleAndRedirect('new'))
 
-router.put('/:id', async (req, res, next) => {    
+router.put('/:id', loginRequired, async (req, res, next) => {        
     req.article = await Article.findById(req.params.id)    
     next()
   }, saveArticleAndRedirect('edit'))
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', loginRequired, async (req, res) => {
     await Article.findByIdAndDelete(req.params.id)
-    res.redirect('/')
+    
+    return res.redirect('/home')
 })
 
 function saveArticleAndRedirect(path) {
@@ -43,11 +49,10 @@ function saveArticleAndRedirect(path) {
         
     
         try {            
-            article = await article.save()
-            console.log(article.slug)
-            res.redirect(`/articles/${article.slug}`)
+            article = await article.save()            
+            return res.redirect(`/articles/${article.slug}`)
         } catch (e) {
-            res.render(`articles/${path}`, {article: article})
+            return res.render(`articles/${path}`, {article: article})
         }    
     }
 }
