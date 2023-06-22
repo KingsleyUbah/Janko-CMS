@@ -10,6 +10,9 @@ Content-Type: application/json
 }
 
 ###
+GET http://localhost:5000/auth/logout
+
+###
 GET http://localhost:5000/api/articles/649467d05be2d73b5194aac5
 
 ###
