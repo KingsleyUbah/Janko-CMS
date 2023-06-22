@@ -11,34 +11,60 @@ router.get("/", async (req, res) => {
     }
 })
 
-router.get("/:id", (req, res) => {
-
+router.get("/:id", getArticle, (req, res) => {
+    res.json(res.article)
 })
 
 router.post("/", async (req, res, next) => {
     console.log(req.body)
+    req.article = new Article()
 
-    const article = new Article()
-    article.title = req.body.title
-    article.description = req.body.description
-    article.markdown = req.body.markdown
+    next()
+}, saveArticle())
 
-    try {            
-        const newArticle = await article.save()            
-        return res.status(201).json(newArticle)
+router.patch("/:id", getArticle, async (req, res) => {
+    if(req.body.title != null) {
+        res.article.title = req.body.title
+    }
+    if(req.body.description != null) {
+        res.article.description = req.body.description
+    }
+    if(req.body.markdown != null) {
+        res.article.markdown = req.body.markdown
+    }
+
+    try {
+        const updatedArticle = await res.article.save()
+        res.json(updatedArticle)
     } catch (e) {
-        return res.status(400).json({message: e.message})
-    }    
-
+        res.status(400).json({message: e.message})
+    }
 })
 
-router.patch("/:id", (req, res) => {
-
+router.delete("/:id", getArticle, async (req, res) => {
+    try {
+        await Article.deleteOne(res.article)
+        res.json({message: "Deleted Subscriber"})
+    } catch(e) {
+        res.status(500).json({message: e.message})
+    }
 })
 
-router.delete("/:id", (req, res) => {
+async function getArticle(req,res, next) {
+    let article
 
-})
+    try {
+        article = await Article.findById(req.params.id)
+        if(article == null ) {
+            return res.status(404).json({message: "Cannot find subsriber"})
+        }
+    } catch(e) {
+        return res.status(500).json({message: e.message})
+    }
+
+    res.article = article
+    next()
+}
 
 function saveArticle() {
     return async (req, res) => {

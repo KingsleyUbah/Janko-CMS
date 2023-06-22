@@ -1,11 +1,25 @@
 GET http://localhost:5000/api/articles
 
 ###
+GET http://localhost:5000/api/articles/649467d05be2d73b5194aac5
+
+###
 POST http://localhost:5000/api/articles
 Content-Type: application/json
 
 {
-    "title": "The Updated DOM article",
-    "description": "New markdown article you need to know",
+    "title": "The Ultra Updated DOM article",
+    "description": "New markdoan article you need to know",
     "markdown": "test"
+}
+
+###
+DELETE http://localhost:5000/api/articles/649467d05be2d73b5194aac5
+
+###
+PATCH http://localhost:5000/api/articles/649465380bba181e0eed76bc
+Content-Type: application/json
+
+{
+    "title": "Beautiful Sexy Updated DOM article"
 }
