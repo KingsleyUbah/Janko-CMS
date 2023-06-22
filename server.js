@@ -82,6 +82,30 @@ app.post("/register", async (req, res) => {
     res.redirect("/home")
 })
 
+
+app.post("/auth/register", async (req, res) => {    
+    const {name, username, email, password} = req.body
+    
+    if(password.length < 5) {
+        res.json({message: 'Password must be more than 5 characters'})
+    }    
+        
+    const hashedPassword = await bcrypt.hash(password, 10)    
+    
+    const user = await User.create({
+        username,
+        name,
+        email,
+       password: hashedPassword
+    })            
+
+    req.session.userID = user.id
+
+    console.log(req.session.userID)
+
+    res.json({message: "User registered! You can now use the API"})
+})
+
 app.post("/login", async (req, res) => {    
     const {username, password} = req.body
     
@@ -106,11 +130,39 @@ app.post("/login", async (req, res) => {
     res.redirect("/home")    
 })
 
+app.post("/auth/login", async (req, res) => {    
+    const {username, password} = req.body
+    
+    const user = await User.findOne({username: username})    
+
+    if(!user) {
+        return res.json({message: 'User does not exist'})            
+    }
+    
+    const isPasswordCorrect = await bcrypt.compare(password, user.password)
+
+    if(!isPasswordCorrect) {
+        return res.json({message: 'Incorrect login details'})            
+    }
+
+    req.session.userID = user.id
+
+    console.log(req.session.userID)
+
+    res.json({message: "You're signed in! You can now use the API"})    
+})
+
 app.get('/logout', (req, res) => {
     delete req.session.userID
 
     console.log(req.session.userID)
     res.redirect("/login")
+})
+
+app.get('/auth/logout', (req, res) => {
+    delete req.session.userID
+    
+    res.json({message: "You're now signed out."})
 })
 
 app.use('/articles', articleRouter)

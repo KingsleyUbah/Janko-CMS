@@ -1,8 +1,9 @@
 const express = require("express")
 const router = express.Router()
 const Article = require('../models/article')
+const authRequired = require('../middlewares/auth-required')
 
-router.get("/", async (req, res) => {
+router.get("/", authRequired, async (req, res) => {
     try {
         const articles = await Article.find().sort({createdAt: 'desc'})
         res.json(articles)
@@ -11,18 +12,18 @@ router.get("/", async (req, res) => {
     }
 })
 
-router.get("/:id", getArticle, (req, res) => {
+router.get("/:id", authRequired, getArticle, (req, res) => {
     res.json(res.article)
 })
 
-router.post("/", async (req, res, next) => {
+router.post("/", authRequired, async (req, res, next) => {
     console.log(req.body)
     req.article = new Article()
 
     next()
 }, saveArticle())
 
-router.patch("/:id", getArticle, async (req, res) => {
+router.patch("/:id", authRequired, getArticle, async (req, res) => {
     if(req.body.title != null) {
         res.article.title = req.body.title
     }
@@ -41,7 +42,7 @@ router.patch("/:id", getArticle, async (req, res) => {
     }
 })
 
-router.delete("/:id", getArticle, async (req, res) => {
+router.delete("/:id", authRequired, getArticle, async (req, res) => {
     try {
         await Article.deleteOne(res.article)
         res.json({message: "Deleted Subscriber"})
