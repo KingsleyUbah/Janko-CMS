@@ -43,7 +43,7 @@ app.get("/home", loginRequired, async (req, res) => {
     
     const articles = await Article.find().sort({createdAt: 'desc'})
 
-    res.render('articles/index', {articles: articles})
+    res.render('articles/index', {articles: articles, userID: req.session.userID})
 })
 
 app.get("/register", (req, res) => {

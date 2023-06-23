@@ -30,7 +30,11 @@ const articleSchema = new mongoose.Schema({
     sanitizedHtml: {
         type: String,
         required: true
-    }    
+    },
+    user: {
+        type: mongoose.Types.ObjectId,
+        ref: "User"
+    }
 })
 
 articleSchema.pre("validate", function(next) {
