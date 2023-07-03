@@ -6,7 +6,7 @@ const {JSDOM} = require('jsdom')
 
 const dompurify = createDomPurify(new JSDOM().window)
 
-const articleSchema = new mongoose.Schema({
+const Article = new mongoose.Schema({
     title: {
         type: String,
         required: true
@@ -32,12 +32,12 @@ const articleSchema = new mongoose.Schema({
         required: true
     },
     user: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }
 })
 
-articleSchema.pre("validate", function(next) {
+Article.pre("validate", function(next) {
     if(this.title) {
         this.slug = slugify(this.title, {lower: true, strict: true})
     }
@@ -48,4 +48,4 @@ articleSchema.pre("validate", function(next) {
 
     next()
 })
-module.exports = mongoose.model('Article', articleSchema)
+module.exports = mongoose.model('Article', Article)

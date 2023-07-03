@@ -3,14 +3,29 @@ const articleRouter = require('./routes/articles')
 const apiRoutes = require('./api/articles')
 const Article = require('./models/article')
 const User = require('./models/user')
+const Profile = require('./models/profile')
 const bcrypt = require('bcryptjs')
 const session = require('express-session')
 const mongoose = require('mongoose')
 const methodOverride = require('method-override')
 const app = express()
 const loginRequired = require('./middlewares/login-required')
-// const registerValidator = require('./validators/register')
+const multer = require('multer')
+const path = require('path')
+const user = require("./models/user")
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/images')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({
+    storage: storage
+})
 
 let uri = 'mongodb+srv://ubahkingsley4:tragers4@cluster0.jwite16.mongodb.net/?retryWrites=true&w=majority'
 
@@ -38,6 +53,38 @@ app.use(session({
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(methodOverride('_method'))
+app.use(express.static('public'))
+
+app.post("/upload", loginRequired, upload.single("uploaded_file"), async (req, res) => {    
+
+    try {
+        const updProfile = await Profile.findOneAndUpdate(
+            {owner: req.session.userID},
+            {
+                bio: req.body.bio,
+                location: req.body.location,
+                image: req.file.filename
+            },
+            {
+                new: true
+            }
+        )
+        
+        console.log(updProfile)
+        return res.redirect('/profile/show')
+    } catch(e) {
+        console.log(e)
+        return res.redirect('/profile/edit')
+    }
+    
+})
+
+app.get('/profile/show', loginRequired, async (req, res) => {
+    const userProfile = await Profile.findOne({owner: req.session.userID})
+    console.log("After saving profile")
+    console.log(userProfile)    
+    res.render('profile/show', {profile: userProfile})
+})
 
 app.get("/home", loginRequired, async (req, res) => {        
     
@@ -65,21 +112,38 @@ app.post("/register", async (req, res) => {
     }    
         
     const hashedPassword = await bcrypt.hash(password, 10)    
+
+    try {        
     
-    const user = await User.create({
-        username,
-        name,
-        email,
-       password: hashedPassword
-    })        
+        const user = await User.create({
+            username,
+            name,
+            email,
+            password: hashedPassword
+        })            
 
-    console.log(user)
+        const newProfile = new Profile({
+            bio: '',
+            location: '',
+            image: '',
+            owner: user
+        })
 
-    req.session.userID = user.id
+        const savedProfile = await newProfile.save()
 
-    console.log(req.session.userID)
+        user.profile = savedProfile
+        const updateUser = await user.save()
+        
+        console.log(updateUser)
+        
+        req.session.userID = user.id    
 
-    res.redirect("/home")
+        res.redirect("/home")
+
+    } catch(e) {
+        console.log(e)
+        res.redirect("/register")
+    }
 })
 
 
@@ -163,6 +227,14 @@ app.get('/auth/logout', (req, res) => {
     delete req.session.userID
     
     res.json({message: "You're now signed out."})
+})
+
+app.get('/profile/edit', loginRequired, async (req, res) => {    
+    const userProfile = await Profile.findOne({owner: req.session.userID})        
+
+    console.log(userProfile)
+
+    res.render('profile/edit', {profile: userProfile})
 })
 
 app.use('/articles', articleRouter)
