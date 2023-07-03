@@ -10,7 +10,7 @@
 <body>
     <div class="container">     
         <% if (profile.isImageExternal === true) { %>
-            <img src="<%= profile.image %>">
+            <img height="100px" width="100px" src="<%= profile.image %>">
             <%} else { %>
                 <img src="http://localhost:5000/images/<%= profile.image %>">
             <% } %>   
@@ -21,6 +21,7 @@
        <div class="mt-4">
         <%- profile.bio %>
        </div>
+       <a href="/profile/edit/" class="btn btn-info">Edit</a> 
     </div>
 </body>
 </html>

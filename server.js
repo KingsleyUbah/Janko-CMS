@@ -58,13 +58,15 @@ app.use(express.static('public'))
 
 app.post("/upload", loginRequired, upload.single("uploaded_file"), async (req, res) => {    
 
+    const oldProfile = await Profile.findOne({owner: req.session.userID})
+
     try {
         const updProfile = await Profile.findOneAndUpdate(
             {owner: req.session.userID},
             {
                 bio: req.body.bio,
                 location: req.body.location,
-                image: req.file.filename
+                image: req.file.filename ? req.file.filename : oldProfile.image
             },
             {
                 new: true
@@ -90,8 +92,14 @@ app.get('/profile/show', loginRequired, async (req, res) => {
 app.get("/home", loginRequired, async (req, res) => {        
     
     const articles = await Article.find().sort({createdAt: 'desc'})
+    console.log("Just before sessions")
+    
+    const profile = await Profile.findOne({owner: req.session.userID})
+    const user = await User.findOne({_id: req.session.userID})
 
-    res.render('articles/index', {articles: articles, userID: req.session.userID})
+    console.log(profile)
+    console.log(user)
+    res.render('articles/index', {articles: articles, userID: req.session.userID, image: profile.image, name: user.name})
 })
 
 app.get("/register", (req, res) => {
