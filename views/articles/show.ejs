@@ -14,7 +14,11 @@
             <%= article.createdAt.toLocaleDateString() %>
         </div>
        <a href="/home" class="btn btn-secondary">All articles</a>
-       <a href="/articles/edit/<%= article.id %>" class="btn btn-info">Edit</a>
+
+       <% if (article.user == userID) { %>
+        <a href="/articles/edit/<%= article.id %>" class="btn btn-info">Edit</a> 
+        <%} %>
+       
 
        <div class="mt-4">
         <%- article.sanitizedHtml %>

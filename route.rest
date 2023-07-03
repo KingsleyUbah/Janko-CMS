@@ -1,12 +1,25 @@
 GET http://localhost:5000/api/articles
 
 ###
+GET http://localhost:5000/api/profile/details
+
+###
+POST http://localhost:5000/api/profile/edit
+Content-Type: application/json
+
+{
+    "bio": "Another test",
+    "location": "Abuja",
+    "image": "https://cdn.britannica.com/77/170477-050-1C747EE3/Laptop-computer.jpg"
+}
+
+###
 POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
-    "username": "1234567",
-    "password": "1234567"
+    "username": "seventhuser7",
+    "password": "seventhuser7"
 }
 
 ###

@@ -20,7 +20,7 @@ router.get('/:slug', loginRequired, async (req, res) => {
 
     if(article == null) res.redirect('/')
 
-    return res.render('articles/show', {article: article})
+    return res.render('articles/show', {article: article, userID: req.session.userID})
 })
 
 router.post('/', loginRequired, async (req, res, next) => {        

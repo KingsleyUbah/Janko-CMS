@@ -1,6 +1,7 @@
 const express = require("express")
 const articleRouter = require('./routes/articles')
 const apiRoutes = require('./api/articles')
+const apiProfRoutes = require('./api/profile')
 const Article = require('./models/article')
 const User = require('./models/user')
 const Profile = require('./models/profile')
@@ -125,7 +126,7 @@ app.post("/register", async (req, res) => {
         const newProfile = new Profile({
             bio: '',
             location: '',
-            image: '',
+            image: '',            
             owner: user
         })
 
@@ -239,5 +240,6 @@ app.get('/profile/edit', loginRequired, async (req, res) => {
 
 app.use('/articles', articleRouter)
 app.use('/api/articles', apiRoutes)
+app.use('/api/profile', apiProfRoutes)
 
 app.listen(5000)
