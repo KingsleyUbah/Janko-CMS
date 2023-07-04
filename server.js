@@ -60,14 +60,22 @@ app.post("/upload", loginRequired, upload.single("uploaded_file"), async (req, r
 
     const oldProfile = await Profile.findOne({owner: req.session.userID})
 
+    // If old image starts with https, then keep the isImageExternal at true
+    let flag
+    if(oldProfile.image.startsWith("https")){
+        flag = true
+    }else {
+        flag = false
+     }
+
     try {
         const updProfile = await Profile.findOneAndUpdate(
             {owner: req.session.userID},
             {
                 bio: req.body.bio,
                 location: req.body.location,
-                image: req.file.filename || oldProfile.image,
-                isImageExternal: false
+                image: req.file ? req.file.filename : oldProfile.image,
+                isImageExternal: flag ? true : false
             },
             {
                 new: true
