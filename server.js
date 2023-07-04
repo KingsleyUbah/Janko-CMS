@@ -66,7 +66,8 @@ app.post("/upload", loginRequired, upload.single("uploaded_file"), async (req, r
             {
                 bio: req.body.bio,
                 location: req.body.location,
-                image: req.file.filename ? req.file.filename : oldProfile.image
+                image: req.file.filename || oldProfile.image,
+                isImageExternal: false
             },
             {
                 new: true

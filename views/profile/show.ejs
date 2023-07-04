@@ -9,11 +9,11 @@
 </head>
 <body>
     <div class="container">     
-        <% if (profile.isImageExternal === true) { %>
+        <% if (profile.isImageExternal == true) { %>
             <img height="100px" width="100px" src="<%= profile.image %>">
             <%} else { %>
                 <img src="http://localhost:5000/images/<%= profile.image %>">
-            <% } %>   
+        <% } %>   
        
        <div class="mt-4">
         <%- profile.location %>
