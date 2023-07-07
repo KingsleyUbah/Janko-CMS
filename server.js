@@ -106,8 +106,7 @@ app.get("/home", loginRequired, async (req, res) => {
     const profile = await Profile.findOne({owner: req.session.userID})
     const user = await User.findOne({_id: req.session.userID})
 
-    console.log(profile)
-    console.log(user)
+    console.log(articles)
     res.render('articles/index', {articles: articles, userID: req.session.userID, image: profile.image, name: user.name})
 })
 
