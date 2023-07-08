@@ -30,8 +30,12 @@
             <div class="flex items-center justify-between px-6" style="height: 10%">
                 <span class="font-bold text-sm text-blue-900 block">Janko</span>
                 <a href="/profile/show">
-                <% if (image) { %>                
-                    <img src="<%= image %>" alt="" class="rounded-3xl" width="40px" height="40px">                
+                <% if (profile.image) { %>    
+                    <% if (profile.isImageExternal == true) { %>                
+                        <img src="<%= image %>" alt="" class="rounded-3xl" width="40px" height="40px">                
+                    <%} else { %>
+                        <img src="http://localhost:5000/images/<%= profile.image %>" alt="" class="rounded-3xl" width="40px" height="40px">                
+                    <% } %>                    
                 <%} else { %>
                     <img src="https://www.dropbox.com/paper/ep/redirect/image?url=https%3A%2F%2Fpaper-attachments.dropboxusercontent.com%2Fs_02A2C42C96B6344CBDC9FE3D91698EA7C0E21FEA9EE434758B1DD83D5A367442_1688809434892_no%2Buser.png&hmac=ZvrRpYeawdErX4NGAGKRRopIena4EZUVwb8eupNfPf0%3D&width=1490" alt="" class="rounded-3xl" width="40px" height="40px">                
                 <% } %>                    

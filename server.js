@@ -12,6 +12,7 @@ const methodOverride = require('method-override')
 const app = express()
 const loginRequired = require('./middlewares/login-required')
 const authRequired = require('./middlewares/auth-required')
+const checkGuest = require('./middlewares/check-guest')
 const multer = require('multer')
 const path = require('path')
 const user = require("./models/user")
@@ -109,17 +110,14 @@ app.get("/home", loginRequired, async (req, res) => {
     const user = await User.findOne({_id: req.session.userID})
 
     console.log(articles)
-    res.render('articles/index', {articles: articles, userID: req.session.userID, image: profile.image, name: user.name})
+    res.render('articles/index', {articles: articles, userID: req.session.userID, profile: profile, name: user.name})
 })
 
-app.get("/register", (req, res) => {
+app.get("/register", checkGuest, (req, res) => {
     res.render('auth/register')
 })
 
-app.get('/login',  (req, res) => {
-    if (req.session) {
-        console.log(req.session.userID)
-    }
+app.get('/login', checkGuest, (req, res) => {
     res.render('auth/login')
 })
 
@@ -235,7 +233,7 @@ app.post("/auth/login", async (req, res) => {
     res.json({message: "You're signed in! You can now use the API"})    
 })
 
-app.get('/logout', (req, res) => {
+app.get('/logout',loginRequired, (req, res) => {
     delete req.session.userID
 
     console.log(req.session.userID)
