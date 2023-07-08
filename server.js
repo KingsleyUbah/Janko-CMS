@@ -11,6 +11,7 @@ const mongoose = require('mongoose')
 const methodOverride = require('method-override')
 const app = express()
 const loginRequired = require('./middlewares/login-required')
+const authRequired = require('./middlewares/auth-required')
 const multer = require('multer')
 const path = require('path')
 const user = require("./models/user")
@@ -93,14 +94,15 @@ app.post("/upload", loginRequired, upload.single("uploaded_file"), async (req, r
 
 app.get('/profile/show', loginRequired, async (req, res) => {
     const userProfile = await Profile.findOne({owner: req.session.userID})
+    const userArticles = await Article.find({user: req.session.userID})
     console.log("After saving profile")
     console.log(userProfile)    
-    res.render('profile/show', {profile: userProfile})
+    res.render('profile/show', {profile: userProfile, articles: userArticles})
 })
 
 app.get("/home", loginRequired, async (req, res) => {        
     
-    const articles = await Article.find().sort({createdAt: 'desc'})
+    const articles = await Article.find().sort({createdAt: 'desc'}).populate('user')
     console.log("Just before sessions")
     
     const profile = await Profile.findOne({owner: req.session.userID})
@@ -240,7 +242,7 @@ app.get('/logout', (req, res) => {
     res.redirect("/login")
 })
 
-app.get('/auth/logout', (req, res) => {
+app.get('/auth/logout', authRequired, (req, res) => {
     delete req.session.userID
     
     res.json({message: "You're now signed out."})
@@ -253,6 +255,31 @@ app.get('/profile/edit', loginRequired, async (req, res) => {
 
     res.render('profile/edit', {profile: userProfile})
 })
+
+app.delete("/database", authRequired, async (req, res) => {
+    try {
+      const db = mongoose.connection.db;
+  
+      // Get all collections
+      const collections = await db.listCollections().toArray();
+      console.log(collections)
+  
+      // Create an array of collection names and drop each collection
+      collections
+        .map((collection) => collection.name)
+        .forEach(async (collectionName) => {
+          db.dropCollection(collectionName);
+        });
+  
+        const newCollections = await db.listCollections().toArray();
+        console.log(newCollections)
+
+        res.sendStatus(200).json({message: "Databases deleted"});
+    } catch (e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+  });
 
 app.use('/articles', articleRouter)
 app.use('/api/articles', apiRoutes)

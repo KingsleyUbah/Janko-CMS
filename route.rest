@@ -4,6 +4,9 @@ GET http://localhost:5000/api/articles
 GET http://localhost:5000/api/profile/details
 
 ###
+DELETE http://localhost:5000/database
+
+###
 POST http://localhost:5000/api/profile/edit
 Content-Type: application/json
 
@@ -18,8 +21,8 @@ POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
-    "username": "seventhuser7",
-    "password": "seventhuser7"
+    "username": "sixthuser6",
+    "password": "sixthuser6"
 }
 
 ###
