@@ -1,11 +1,11 @@
 // Makes sure the web user doesn't access login and register routes if still signed in
 
-const checkGuest = async (req, res, next) => {
+const checkAPIGuest = async (req, res, next) => {
     if(req.session && req.session.userID) {
-        return res.redirect('home')
+        return res.json({message: "You're already signed in!"})
     }
 
     next()
 }
 
-module.exports = checkGuest
+module.exports = checkAPIGuest
