@@ -6,6 +6,12 @@ Here's a short DEMO of the application:
 
 [![Watch the video](https://img.youtube.com/vi/MGnj7CuweWs/hqdefault.jpg)](https://youtu.be/MGnj7CuweWs)
 
+## Getting Started
+
+1. Clone this project's source code to your local dev machine
+2. Run `npm i` to install dependencies
+3. Finally, run `node server.js` to start up the application
+
 ## APIs
 
 You can also interact with JANKO via its APIs. This allows you to use the platform without needing to navigate its UI in your web browser.
