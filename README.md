@@ -14,11 +14,22 @@ Here's a short DEMO of the application:
 
 ## Screenshots
 
+The home page:
 ![homepage](images/1.png)
+
+The **Edit Article** page:
 ![edit article page](images/2.png)
+
+The **User profile** page:
 ![user profile page](images/3.png)
+
+The **Edit profile** page:
 ![edit profile page](images/4.png)
+
+The **login** page:
 ![login page](images/5.png)
+
+The **register account** page:
 ![register account page](images/6.png)
 
 ## APIs
