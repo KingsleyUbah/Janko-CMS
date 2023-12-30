@@ -12,6 +12,15 @@ Here's a short DEMO of the application:
 2. Run `npm i` to install dependencies
 3. Finally, run `node server.js` to start up the application
 
+## Screenshots
+
+![homepage](images/1.png)
+![edit article page](images/2.png)
+![user profile page](images/3.png)
+![edit profile page](images/4.png)
+![login page](images/5.png)
+![register account page](images/6.png)
+
 ## APIs
 
 You can also interact with JANKO via its APIs. This allows you to use the platform without needing to navigate its UI in your web browser.
