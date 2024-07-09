@@ -31,8 +31,9 @@ const upload = multer({
     storage: storage
 })
 
-let uri = 'mongodb+srv://ubahkingsley4:tragers4@cluster0.jwite16.mongodb.net/?retryWrites=true&w=majority'
+let uri = 'add-your-mongobd-connection-key-here'
 
+// Connect to MongoDB database
 mongoose.connect(uri)
 .then(() => {
     console.log("Mongoose connected")
@@ -66,7 +67,7 @@ app.post("/upload", loginRequired, upload.single("uploaded_file"), async (req, r
 
     const oldProfile = await Profile.findOne({owner: req.session.userID})
 
-    // If old image starts with https, then keep the isImageExternal at true    
+    // This helper checks if the image is in the /public dir or an already hosted image
     let flag
 
     if(oldProfile.image.startsWith("https")){
